@@ -1,28 +1,66 @@
-import React from 'react'
+import React ,{useEffect, useState} from 'react';
+import axios from "axios";
+
 
 function MainPage() {
+    //states for the form feilds
+    const [date, setDate] = useState(null);
+    const [sourceCurrency, setSourceCurrency] = useState("");
+    const [targetCurrency, setTaragetCurrency] = useState("");
+    const [amountInSourceCurrency, setAmountInSourceCurrency] = useState(0);
+    const [amountInTargetCurrency, setAmountInTargetCurrency] = useState(0);
+    const [CurrencyNames , setCurrencyNames] = useState([]);
+
+    //handleSubmit method
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        //console.log(date, setSourceCurrency, targetCurrency, amountInSourceCurrency);
+        console.log(sourceCurrency);
+
+
+    };
+
+    //GET ALL CURRENCY NAMES
+    useEffect(()=>{
+        const getCurrencyNames = async() =>{
+            try{
+                const responce = await axios.get(
+                    "http://localhost:5000/getAllCurrencies"
+                );
+                setCurrencyNames(responce.data);
+
+            }catch(err){
+                console.error(err);
+            }
+        }
+        getCurrencyNames();
+           
+        } , [])
+
   return (
     <div>
-        <h1 className=' lg:mx-32 text-5xl font-bold text-green-500'>Convert Your Currencies Today</h1>
-        <p className=' lg:mx-32 opacity-40 py-6'>
+        <h1 className='text-5xl font-bold text-green-500 lg:mx-32'>Convert Your Currencies Today</h1>
+        <p className='py-6 lg:mx-32 opacity-40'>
             The default keyboard shortcut is the same for all supported platforms. 
             You can also add options to the lorem command with an underscore character followed by the option name.
             How to Use Lorem Ipsum. For plaintext Lorem Ipsum, type lorem then press the Ctrl-Shift-L keyboard shortcut.
         </p>
 
-        <div className=' mt-5 flex items-center justify-center flex-col'>
-            <section className=' w-full lg:w-1/2'>
-                <form>
-                    
+        <div className='flex flex-col items-center justify-center mt-5 '>
+            <section className='w-full lg:w-1/2'>
+                <form onSubmit={handleSubmit}>
+
                      <div className="mb-4">
                         <label 
-                            htmlFor='' 
+                            htmlFor={date} 
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Date
                         </label>
-                        <input 
+                        <input
+                            onChange={(e) => setDate(e.target.value)} 
                             type="date" 
-                            id="" 
+                            id={date}
+                            name={date} 
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
                              focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                              dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" 
@@ -31,53 +69,72 @@ function MainPage() {
                          />
                     </div>
 
+
                     <div className="mb-4">
                         <label 
-                            htmlFor='' 
+                            htmlFor={sourceCurrency} 
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Source Currency
                         </label>
 
-                        <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                        <select
+                            onChange={(e) =>setSourceCurrency(e.target.value)}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
                              focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                              dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"  
-                            name="" 
-                            id='' >
+                            name={sourceCurrency}
+                            id={sourceCurrency}
+                            value={sourceCurrency} >
 
                                 <option value=""> Select Source Currency</option>
-
+                                {Object.keys(CurrencyNames).map((Currency)=>(
+                                    <option className="p-1 " key={Currency} value={Currency}>
+                                        {CurrencyNames[Currency]}
+                                    </option>
+                                ))}
                         </select>
-                       
                     </div>
+
 
                     <div className="mb-4">
                         <label 
-                            htmlFor='' 
+                            htmlFor={targetCurrency} 
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Target Currency
                         </label>
 
-                        <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                        <select 
+                            onChange={(e) =>setTaragetCurrency(e.target.value)}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
                              focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                              dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"  
-                            name="" 
-                            id='' >
+                            name={targetCurrency}
+                            id={targetCurrency}
+                            value={targetCurrency} >
 
                                 <option value=""> Select Target Currency</option>
+                                {Object.keys(CurrencyNames).map((Currency)=>(
+                                    <option className="p-1 " key={Currency} value={Currency}>
+                                        {CurrencyNames[Currency]}
+                                    </option>
+                                ))}
 
-                        </select>
-                       
+                        </select> 
                     </div>
+
 
                     <div className="mb-4">
                         <label 
-                            htmlFor='' 
+                            htmlFor={amountInSourceCurrency}
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Amount in Source Currency
                         </label>
                         <input 
-                            type="text" 
-                            id="" 
+                            onChange={(e) =>setAmountInSourceCurrency(e.target.value)}
+                            type="number" 
+                            id={amountInSourceCurrency}
+                            name={amountInSourceCurrency}
+
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
                              focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                              dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" 
@@ -86,8 +143,7 @@ function MainPage() {
                          />
                     </div>
 
-                    <button className=' bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md'>
-                        {""}
+                    <button  className='px-4 py-2 font-medium text-white bg-green-600 rounded-md hover:bg-green-700'>
                         Get the Target Currency
                     </button>
 
